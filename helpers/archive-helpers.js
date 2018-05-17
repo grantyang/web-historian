@@ -30,54 +30,61 @@ exports.initialize = function (pathsObj) {
 
 exports.readListOfUrls = function (callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) => {
-    console.log('data is', data);
-    console.log('exports.paths.list is', exports.paths.list);
+    console.log('sites.txt is', data);
     if (err) {
       console.log('error');
       throw err;
     }
     if (data) {
-      console.log('splitting array');
-      callback(data.split('\n'));
+      let arr = data.split('\n');
+      callback(arr.slice(0, arr.length - 1)); //get rid of trailing newLine
     } else {
-      console.log('empty array');
       callback([]);
     }
   });
 };
 
 exports.isUrlInList = function (url, callback) {
-  console.log('looking for url:', url);
   exports.readListOfUrls(function (returnedArray) {
-    console.log('returned array is', returnedArray);
     let result = returnedArray.includes(url);
     callback(result);
   });
 };
 
 exports.addUrlToList = function (url, callback) {
-  exports.readListOfUrls(function (urlArray) {
-    urlArray.push(url);
-    fs.writeFile(exports.paths.list, urlArray.join('\n'), (err) => {
-      if (err) { throw err; } else { callback(); }
-      console.log('appended!');
-      console.log('final array is', urlArray.join('\n') );
-    });
-  });
-};
-
-exports.isUrlArchived = function (url, callback) {
-  //try to read it, if it doesnt work, err.
-  // let encodedName = encodeURI(url);
-  // fs.readFile(exports.paths.archivedSites + '/' + encodedName, 'utf8', (err, data) => {
-  //   if (err) { throw err; }
-  //   console.log('archived!');
-  //   callback(data);
+  fs.appendFile(exports.paths.list, url + '\n', (err) => {
+    if (err) { throw err; }
+    else if (callback) { callback(); }
+  })
+  // exports.readListOfUrls(function (urlArray) {
+  //   urlArray.push(url);
+  //   fs.writeFile(exports.paths.list, urlArray.join('\n'), (err) => {
+  //     if (err) { throw err; }
+  //     else if (callback) { callback(); }
+  //     console.log('appended!');
+  //   });
   // });
 };
 
-exports.downloadUrls = function (urls) {
+exports.isUrlArchived = function (url, callback) {
+  console.log('isUrlArchived called.')
+  //try to read it, if it doesnt work, err.
+  let encodedName = encodeURI(url);
+  fs.readFile(exports.paths.archivedSites + '/' + encodedName + '.html', 'utf8', (err, data) => {
+    if (err) { callback(data) }
+    callback(data);
+  });
+};
 
+exports.downloadUrls = function (urls) {
+  for (let url of urls) {
+    console.log('url checking is:', url)
+    exports.isUrlArchived(url, function (archived) {
+      if (!archived) {
+        utils.getWebsiteHtml(url);
+      }
+    });
+  }
   //input is an array of new urls
   //for each url in the array
   //download the html of that specific page

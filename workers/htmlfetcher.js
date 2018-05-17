@@ -1,3 +1,5 @@
+var archive = require('../helpers/archive-helpers');
+
 // Use the code in `archive-helpers.js` to actually download the urls
 // that are waiting.
 
@@ -7,7 +9,9 @@
 // then exit?
 
 var CronJob = require('cron').CronJob;
-new CronJob('0,10,20,30,40,50 * * * * *', function() {
+new CronJob('0,10,20,30,40,50 * * * * *', function () {
   console.log('You will see this message every 10 seconds');
-  //if our sites.txt does not exist, don't do anything
+  archive.readListOfUrls(function (urls) {
+    archive.downloadUrls(urls)
+  })
 }, null, true, 'America/Los_Angeles');
