@@ -25,22 +25,22 @@ var actions = {
   },
   'POST': function (request, response) {
     utils.collectData(request, function (data) {
-      let inputUrl = data.split('=')[1]
+      let inputUrl = data.split('=')[1];
       archive.readListOfUrls(function (dataArray) {
         archive.isUrlInList(inputUrl, dataArray, function (result) {
           if (result) {
-            console.log('url is already in sites.txt')
+            console.log('url is already in sites.txt');
             archive.isUrlArchived(inputUrl, function (archivedSite) {
               if (!archivedSite) {
-                console.log('site is not yet archived')
+                console.log('site is not yet archived');
                 //send user to loading page
                 utils.sendResponse(response, '', 404);
               } else {
                 //send user to archived page
-                console.log('getting archived page')
+                console.log('getting archived page');
                 utils.sendResponse(response, archivedSite);
               }
-            })
+            });
           } else {
             fs.readFile(archive.paths.loading, 'utf8', function (err, data) {
               if (err) {
@@ -49,10 +49,10 @@ var actions = {
                 utils.sendResponse(response, data);
               }
             });
-            archive.addUrlToList(inputUrl) //callback call worker
+            archive.addUrlToList(inputUrl); //callback call worker
           }
-        })
-      })
+        });
+      });
 
 
 

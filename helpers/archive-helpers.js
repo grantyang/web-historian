@@ -30,10 +30,9 @@ exports.initialize = function (pathsObj) {
 
 exports.readListOfUrls = function (callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) => {
-    if (err) throw err;
-    if (data) callback(JSON.parse(data));
-    else callback([])
-  })
+    if (err) { throw err; }
+    if (data) { callback(JSON.parse(data)); } else { callback([]); }
+  });
 };
 
 exports.isUrlInList = function (url, urlArray, callback) {
@@ -42,13 +41,13 @@ exports.isUrlInList = function (url, urlArray, callback) {
 };
 
 exports.addUrlToList = function (url, callback) {
-  exports.readListOfUrls(function (urlArray){
-    urlArray.push(url)
+  exports.readListOfUrls(function (urlArray) {
+    urlArray.push(url);
     fs.writeFile(exports.paths.list, JSON.stringify(urlArray), (err) => {
-      if (err) throw err;
-      console.log('appended!')
-    })
-  })
+      if (err) { throw err; }
+      console.log('appended!');
+    });
+  });
 
   // fs.appendFile(exports.paths.list, `${url}\n`, (err) => {
   //   if (err) throw err;
@@ -61,9 +60,9 @@ exports.isUrlArchived = function (url, callback) {
   //try to read it, if it doesnt work, err.
   let encodedName = encodeURI(url);
   fs.readFile(exports.paths.archivedSites + '/' + encodedName, 'utf8', (err, data) => {
-    if (err) throw err;
+    if (err) { throw err; }
     console.log('archived!');
-    callback(data)
+    callback(data);
   });
 };
 
@@ -71,6 +70,6 @@ exports.downloadUrls = function (urls) {
   
   //input is an array of new urls
   //for each url in the array
-    //download the html of that specific page
-    //save it to archives/sites and name it with encodeURI
+  //download the html of that specific page
+  //save it to archives/sites and name it with encodeURI
 };
