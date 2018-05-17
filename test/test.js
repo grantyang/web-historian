@@ -97,13 +97,13 @@ describe('archive helpers', function() {
       var total = 2;
 
       archive.isUrlInList('example1.com', function (exists) {
-        console.log('exists is', exists)
+        console.log('exists is', exists);
         expect(exists).to.be.true;
         if (++counter === total) { done(); }
       });
 
       archive.isUrlInList('gibberish', function (exists) {
-        console.log('exists is', exists)
+        console.log('exists is', exists);
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
       });

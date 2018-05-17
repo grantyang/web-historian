@@ -30,38 +30,38 @@ exports.initialize = function (pathsObj) {
 
 exports.readListOfUrls = function (callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) => {
-    console.log('data is', data)
-    console.log('exports.paths.list is', exports.paths.list)
+    console.log('data is', data);
+    console.log('exports.paths.list is', exports.paths.list);
     if (err) {
-      console.log('error')
+      console.log('error');
       throw err;
     }
     if (data) {
-      console.log('splitting array')
+      console.log('splitting array');
       callback(data.split('\n'));
     } else {
-      console.log('empty array')
+      console.log('empty array');
       callback([]);
     }
   });
 };
 
 exports.isUrlInList = function (url, callback) {
-  console.log('looking for url:', url)
+  console.log('looking for url:', url);
   exports.readListOfUrls(function (returnedArray) {
-    console.log('returned array is', returnedArray)
+    console.log('returned array is', returnedArray);
     let result = returnedArray.includes(url);
     callback(result);
-  })
+  });
 };
 
 exports.addUrlToList = function (url, callback) {
   exports.readListOfUrls(function (urlArray) {
-    urlArray.push(url + '\n');
+    urlArray.push(url);
     fs.writeFile(exports.paths.list, urlArray.join('\n'), (err) => {
-      if (err) { throw err; }
-      else { callback(); }
+      if (err) { throw err; } else { callback(); }
       console.log('appended!');
+      console.log('final array is', urlArray.join('\n') );
     });
   });
 };

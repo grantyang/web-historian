@@ -46,7 +46,7 @@ var actions = {
             }
           });
           archive.addUrlToList(inputUrl, function() {
-            console.log('call worker')
+            console.log('call worker');
             //fake function
             //TODO: call worker
           });
