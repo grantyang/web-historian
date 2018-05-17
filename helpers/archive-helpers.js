@@ -30,44 +30,54 @@ exports.initialize = function (pathsObj) {
 
 exports.readListOfUrls = function (callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) => {
-    if (err) { throw err; }
-    if (data) { callback(JSON.parse(data)); } else { callback([]); }
+    console.log('data is', data)
+    console.log('exports.paths.list is', exports.paths.list)
+    if (err) {
+      console.log('error')
+      throw err;
+    }
+    if (data) {
+      console.log('splitting array')
+      callback(data.split('\n'));
+    } else {
+      console.log('empty array')
+      callback([]);
+    }
   });
 };
 
-exports.isUrlInList = function (url, urlArray, callback) {
-  let result = urlArray.includes(url);
-  callback(result);
+exports.isUrlInList = function (url, callback) {
+  console.log('looking for url:', url)
+  exports.readListOfUrls(function (returnedArray) {
+    console.log('returned array is', returnedArray)
+    let result = returnedArray.includes(url);
+    callback(result);
+  })
 };
 
 exports.addUrlToList = function (url, callback) {
   exports.readListOfUrls(function (urlArray) {
-    urlArray.push(url);
-    fs.writeFile(exports.paths.list, JSON.stringify(urlArray), (err) => {
+    urlArray.push(url + '\n');
+    fs.writeFile(exports.paths.list, urlArray.join('\n'), (err) => {
       if (err) { throw err; }
+      else { callback(); }
       console.log('appended!');
     });
   });
-
-  // fs.appendFile(exports.paths.list, `${url}\n`, (err) => {
-  //   if (err) throw err;
-  //   console.log('appending!')
-  // })
-  //alert worker
 };
 
 exports.isUrlArchived = function (url, callback) {
   //try to read it, if it doesnt work, err.
-  let encodedName = encodeURI(url);
-  fs.readFile(exports.paths.archivedSites + '/' + encodedName, 'utf8', (err, data) => {
-    if (err) { throw err; }
-    console.log('archived!');
-    callback(data);
-  });
+  // let encodedName = encodeURI(url);
+  // fs.readFile(exports.paths.archivedSites + '/' + encodedName, 'utf8', (err, data) => {
+  //   if (err) { throw err; }
+  //   console.log('archived!');
+  //   callback(data);
+  // });
 };
 
 exports.downloadUrls = function (urls) {
-  
+
   //input is an array of new urls
   //for each url in the array
   //download the html of that specific page
